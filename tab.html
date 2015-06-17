@@ -1,17 +1,35 @@
 <!doctype html>
 <html data-ng-app="myApp" data-ng-csp="">
-<head>
-    <meta charset="UTF-8">
-    <title>Weather Forecast</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/angular-csp.css">
-</head>
-<body>
-<div class="container">
-</div>
-<script src="./js/vendor/angular.min.js"></script>
-<script src="./js/vendor/angular-route.min.js"></script>
-<script src="./js/app.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Weather Forecast</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/angular-csp.css">
+    </head>
+    <body>
+        <div class="container">
+            <div ng-controller="MainController as mainController">
+                <div id="datetime">
+                    <h1 ng-bind="(mainController.date.raw | date: 'hh mm ss')"></h1>
+                    <h2 ng-bind="(mainController.date.raw | date: 'EEEE, MMMM yyyy')"></h2>
+                </div>
+                <div id="forecast">
+                    <ul class="row list-unstyled">
+                        <li ng-repeat="day in mainController.weather.forecast.forecastday" class="col-md-3">
+                            <div ng-class= "{today: $index == 0 }">
+                                <img ng-src="{{ day.icon_url }}" />
+                                <h3 ng-bind="day.high.fahrenheit"></h3>
+                                <h4 ng-if="$index == 0">Now</h4>
+                                <h4 ng-if="$index != 0" ng-bind="day.date.weekday"></h4>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="./js/vendor/angular.min.js"></script>
+        <script src="./js/vendor/angular-route.min.js"></script>
+        <script src="./js/app.js"></script>
+    </body>
 </html>
