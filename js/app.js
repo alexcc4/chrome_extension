@@ -20,13 +20,16 @@ angular.module('myApp')
 
 function Weather() {
     var apiKey = '';
+    this.setApiKey = setApiKey;
+    this.$get = $get;
+    this.getUrl = getUrl;
 
-    this.setApiKey = function(apiKey) {
+    function setApiKey(apiKey) {
         //this 这里用到了原型链
         apiKey && (this.apiKey = apiKey)
-    };
+    }
 
-    this.$get = function($q, $http) {
+    function $get($q, $http) {
         var self = this;
         return {
             getWeatherForecast: function(city) {
@@ -43,16 +46,17 @@ function Weather() {
                 return d.promise;
             }
         };
-    };
+    }
 
-    this.getUrl = function(type, ext) {
+    function getUrl(type, ext) {
         return "http://api.wunderground.com/api/" + this.apiKey + "/" + type + "/q/" + ext + '.json';
-    };
+    }
 }
 
 function MainController($scope, $timeout, Weather) {
     var self = this;
     this.date = {};
+    this.weather = {};
 
     var updateTime = function() {
         self.date.raw = new Date();
@@ -61,7 +65,6 @@ function MainController($scope, $timeout, Weather) {
 
     updateTime();
 
-    this.weather = {};
     //暂时硬编码
     Weather.getWeatherForecast('CA/San_Francisco')
         .then(function(data) {
