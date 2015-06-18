@@ -29,6 +29,9 @@ angular.module('myApp')
     .provider('Weather', Weather);
 
 angular.module('myApp')
+    .factory('UserService', UserService);
+
+angular.module('myApp')
     .controller('MainController', MainController);
 
 angular.module('myApp')
@@ -69,10 +72,30 @@ function Weather() {
     }
 }
 
-function MainController($scope, $timeout, Weather) {
+function UserService() {
+    var defaults = {
+        location: 'autoip'
+    };
+    var service = {
+        user: {},
+        save: function() {
+            sessionStorage.presenty = angular.toJson(service.user);
+        },
+        restore: function() {
+            //从sessionStorage中拉取配置
+            service.user = !isEmpty(angular.fromJson(sessionStorage.presenty)) || defaults;
+            return service.user;
+        }
+    };
+    service.restore();
+    return service;
+}
+
+function MainController($scope, $timeout, Weather, UserService) {
     var self = this;
     this.date = {};
     this.weather = {};
+    this.user = UserService.user;
 
     var updateTime = function() {
         self.date.raw = new Date();
@@ -81,11 +104,22 @@ function MainController($scope, $timeout, Weather) {
 
     updateTime();
 
-    //暂时硬编码
-    Weather.getWeatherForecast('CA/San_Francisco')
+
+    Weather.getWeatherForecast(self.user.location)
         .then(function(data) {
             self.weather.forecast = data;
         });
 }
 
-function SettingsController() {}
+function SettingsController($scope, UserService) {
+    this.user = UserService.user;
+    this.save = Save;
+
+    function Save() {
+        UserService.save();
+    }
+}
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}

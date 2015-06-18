@@ -1,7 +1,7 @@
 <h2>设置</h2>
 <div ng-controller="SettingsController as settingsContronller">
-    <form ng-submit="save()">
-        <input type="text" ng-model="user.location" placeholder="填写位置" />
+    <form ng-submit="settingsController.save()">
+        <input type="text" ng-model="settingsController.user.location" placeholder="填写位置" />
         <input class="btn btn-primary" type="submit" value="保存" />
     </form>
 </div>
