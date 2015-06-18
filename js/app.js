@@ -2,13 +2,26 @@
  * Created by alex on 6/18/15.
  */
 
-angular.module('myApp', []);
+angular.module('myApp', ['ngRoute']);
 
 //angular 风格 by https://github.com/johnpapa/angular-styleguide/blob/master/i18n/zh-CN.md
 
+//config函数只声明一次，若多次声明，则后者覆盖前者
 angular.module('myApp')
-    .config(function(WeatherProvider) {
-        WeatherProvider.setApiKey('a44dc8250645d5ff');
+    .config(function($routeProvider, WeatherProvider) {
+        WeatherProvider.setApiKey('Your key');
+        $routeProvider
+            .when('/', {
+                templateUrl: 'templates/home.html',
+                controller: 'MainController',
+                controllerAs: 'mainController'
+            })
+            .when('/settings', {
+                templateUrl: 'templates/settings.html',
+                controller: 'SettingsController',
+                controllerAs: 'settingsController'
+            })
+            .otherwise({redirectTo: '/'});
     });
 
 //使用provider注册服务，因为这是注入到config函数服务中的唯一方法
@@ -17,6 +30,9 @@ angular.module('myApp')
 
 angular.module('myApp')
     .controller('MainController', MainController);
+
+angular.module('myApp')
+    .controller('SettingsController', SettingsController);
 
 function Weather() {
     var apiKey = '';
@@ -71,3 +87,5 @@ function MainController($scope, $timeout, Weather) {
             self.weather.forecast = data;
         });
 }
+
+function SettingsController() {}
